@@ -1,35 +1,32 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import './App.css'
-import Messages from './Messages'
-import MessageStandalone from './MessageStandalone'
-import Home from './Home'
-import Header from './Header'
-import Footer from './Footer'
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-const App = props => {
+function App() {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get("https://verbose-acorn-5wvj5qpg4x4h7649-5002.app.github.dev/about")
+      .then((res) => setData(res.data))
+      .catch((err) => console.error("Error fetching data:", err));
+  }, []);
+
+  if (!data) return <p>Loading...</p>;
+
   return (
-    <div className="App">
-      <Router>
-        <Header />
-        <main className="App-main">
-          <Routes>
-            {/* a route for the home page */}
-            <Route path="/" element={<Home />} />
-
-            {/* a route to see a list of all messages */}
-            <Route path="/messages" element={<Messages />} />
-
-            {/* a route for just a single message, where the id of the desired message is passed as a parameter */}
-            <Route
-              path="/messages/:messageId"
-              element={<MessageStandalone />}
-            />
-          </Routes>
-        </main>
-        <Footer />
-      </Router>
+    <div style={{ textAlign: "center", padding: "20px" }}>
+      <h1>About Me</h1>
+      <img
+        src={data.image}
+        alt="Shritha"
+        width="200"
+        style={{ borderRadius: "100px" }}
+      />
+      <h2>{data.name}</h2>
+      <p>{data.about}</p>
+      <p><em>{data.hobbies}</em></p>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

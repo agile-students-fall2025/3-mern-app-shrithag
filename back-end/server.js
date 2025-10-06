@@ -1,23 +1,20 @@
-#!/usr/bin/env node
+const express = require('express');
+const cors = require('cors');
 
-// import the express app
-const server = require('./app')
-require('dotenv').config({ silent: true }) // load environmental variables from a hidden file named .env
+const app = express();
 
-// which port to listen for HTTP(S) requests
-const port = process.env.PORT || 3000
+app.use(cors({
+  origin: 'https://verbose-acorn-5wvj5qpg4x4h7649-7002.app.github.dev'
+}));
 
-// call a function to start listening to the port
-const listener = server.listen(port, function () {
-  console.log(`Server running on port: ${port}`)
-})
+app.get('/', (req, res) => {
+  res.send('Backend is running!');
+});
 
-// a function to stop listening to the port
-const close = () => {
-  listener.close()
-}
+const aboutRoute = require('./routes/about');
+app.use('/about', aboutRoute);
 
-// export the close function
-module.exports = {
-  close: close,
-}
+const PORT = process.env.PORT || 5002;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
